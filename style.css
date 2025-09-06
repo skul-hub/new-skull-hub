@@ -1,0 +1,35 @@
+/* style.css */
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Arial', sans-serif; }
+body { background:#f8f9fa; }
+
+/* Login & Register */
+.login-container, .register-container { width:350px; margin:100px auto; background:#fff; padding:30px; border-radius:10px; box-shadow:0 5px 25px rgba(0,0,0,0.1); }
+.login-container h1, .register-container h1 { text-align:center; margin-bottom:20px; color:#333; }
+.login-container input, .register-container input { width:100%; padding:12px 10px; margin:10px 0; border:1px solid #ccc; border-radius:6px; }
+.login-container button, .register-container button { width:100%; padding:12px; margin-top:10px; background:#007bff; border:none; color:white; font-size:16px; border-radius:6px; cursor:pointer; transition:0.3s; }
+.login-container button:hover, .register-container button:hover { background:#0056b3; }
+
+/* Navbar */
+.navbar { display:flex; justify-content:space-between; align-items:center; background:#343a40; padding:10px 20px; color:white; }
+.navbar a { color:white; text-decoration:none; margin-left:15px; }
+.navbar a:hover { text-decoration:underline; }
+
+/* Product Card */
+.product-card { background:#fff; padding:15px; border-radius:10px; box-shadow:0 5px 15px rgba(0,0,0,0.1); text-align:center; margin:15px; width:200px; display:inline-block; vertical-align:top; }
+.product-card img { width:100%; border-radius:10px; }
+.product-card button { margin:5px; padding:8px 12px; border:none; border-radius:6px; cursor:pointer; transition:0.3s; }
+.buy-btn { background:#28a745; color:white; }
+.buy-btn:hover { background:#218838; }
+.cart-btn { background:#ffc107; color:white; }
+.cart-btn:hover { background:#e0a800; }
+
+/* Table */
+.table { width:100%; border-collapse:collapse; margin:20px 0; }
+.table th, .table td { border:1px solid #ddd; padding:10px; text-align:center; }
+.table th { background:#343a40; color:white; }
+
+/* Footer */
+footer { text-align:center; padding:20px; background:#343a40; color:white; margin-top:50px; font-size:14px; }
+
+/* Responsive */
+@media(max-width:768px){ .product-card { width:45%; margin:10px auto; } .navbar { flex-direction:column; text-align:center; } }
