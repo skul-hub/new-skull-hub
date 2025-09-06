@@ -5,42 +5,38 @@
 <link rel="stylesheet" href="../style.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 <script src="../supabase.js"></script>
-<script>
-document.addEventListener("DOMContentLoaded", async()=>{
-    if(!localStorage.getItem("admin")){alert("Login admin dulu"); window.location.href="../index.html";}
-    const container=document.getElementById("orderTable");
-
-    async function fetchOrders(){
-        const {data:orders}=await supabase.from("orders").select("*").order("created_at",{ascending:false});
-        let html=`<table class="table"><tr><th>User</th><th>Produk</th><th>Qty</th><th>Status</th><th>Aksi</th></tr>`;
-        orders.forEach(o=>{
-            html+=`<tr>
-                <td>${o.buyer_name}</td>
-                <td>${o.product_name}</td>
-                <td>${o.qty}</td>
-                <td>${o.status}</td>
-                <td>
-                    ${o.status==="pending"?`<button onclick="updateStatus(${o.id},'done')">Done</button> <button onclick="updateStatus(${o.id},'batal')">Batal</button>`:"-"}
-                </td>
-            </tr>`;
-        });
-        html+="</table>";
-        container.innerHTML=html;
-    }
-    fetchOrders();
-
-    window.updateStatus=async(id,status)=>{
-        await supabase.from("orders").update({status}).eq("id",id); fetchOrders();
-    }
-
-    supabase.from("orders").on('UPDATE',payload=>{fetchOrders();}).subscribe();
-});
-</script>
+<script src="../js/admin/admin-orders.js"></script>
 </head>
 <body>
 <div class="navbar"></div>
 <h2>Kelola Pesanan</h2>
-<div id="orderTable"></div>
+
+<div id="pendingOrders">
+    <h3>Pending</h3>
+    <div id="pendingTable"></div>
+</div>
+<div id="doneOrders">
+    <h3>Done</h3>
+    <div id="doneTable"></div>
+</div>
+<div id="cancelOrders">
+    <h3>Batal</h3>
+    <div id="cancelTable"></div>
+</div>
+
 <footer>@2025SKULLHOSTING - StoreSkull</footer>
+
+<script>
+document.addEventListener("DOMContentLoaded", ()=>{
+    const navbar=document.querySelector(".navbar");
+    navbar.innerHTML=`
+        <a href="dashboard.html">Dashboard</a>
+        <a href="kelola-produk.html">Kelola Produk</a>
+        <a href="kelola-pesanan.html">Kelola Pesanan</a>
+        <a href="#" id="logoutBtn">Logout</a>
+    `;
+    document.getElementById("logoutBtn").onclick=()=>{localStorage.removeItem("admin"); window.location.href="../index.html";}
+});
+</script>
 </body>
 </html>
