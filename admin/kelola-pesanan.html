@@ -1,38 +1,46 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kelola Pesanan - Admin StoreSkull</title>
+<title>Kelola Pesanan</title>
 <link rel="stylesheet" href="../style.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 <script src="../supabase.js"></script>
-<script src="../js/admin/admin-orders.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", async()=>{
+    if(!localStorage.getItem("admin")){alert("Login admin dulu"); window.location.href="../index.html";}
+    const container=document.getElementById("orderTable");
+
+    async function fetchOrders(){
+        const {data:orders}=await supabase.from("orders").select("*").order("created_at",{ascending:false});
+        let html=`<table class="table"><tr><th>User</th><th>Produk</th><th>Qty</th><th>Status</th><th>Aksi</th></tr>`;
+        orders.forEach(o=>{
+            html+=`<tr>
+                <td>${o.buyer_name}</td>
+                <td>${o.product_name}</td>
+                <td>${o.qty}</td>
+                <td>${o.status}</td>
+                <td>
+                    ${o.status==="pending"?`<button onclick="updateStatus(${o.id},'done')">Done</button> <button onclick="updateStatus(${o.id},'batal')">Batal</button>`:"-"}
+                </td>
+            </tr>`;
+        });
+        html+="</table>";
+        container.innerHTML=html;
+    }
+    fetchOrders();
+
+    window.updateStatus=async(id,status)=>{
+        await supabase.from("orders").update({status}).eq("id",id); fetchOrders();
+    }
+
+    supabase.from("orders").on('UPDATE',payload=>{fetchOrders();}).subscribe();
+});
+</script>
 </head>
 <body>
-
-<div class="navbar">
-    <div>StoreSkull Admin</div>
-    <div>
-        <a href="dashboard.html">Beranda</a>
-        <a href="kelola-produk.html">Kelola Produk</a>
-        <a href="kelola-pesanan.html">Kelola Pesanan</a>
-        <a href="#" id="logoutBtn">Logout</a>
-    </div>
-</div>
-
-<h2 style="text-align:center; margin-top:20px;">Kelola Pesanan</h2>
-
-<h3>Pending</h3>
-<div id="pendingTable"></div>
-
-<h3>Done</h3>
-<div id="doneTable"></div>
-
-<h3>Batal</h3>
-<div id="batalTable"></div>
-
-<footer>@2025 SKULLHOSTING - StoreSkull</footer>
-
+<div class="navbar"></div>
+<h2>Kelola Pesanan</h2>
+<div id="orderTable"></div>
+<footer>@2025SKULLHOSTING - StoreSkull</footer>
 </body>
 </html>
