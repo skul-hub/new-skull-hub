@@ -1,30 +1,38 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>History - StoreSkull</title>
+<title>History User</title>
 <link rel="stylesheet" href="../style.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 <script src="../supabase.js"></script>
-<script src="../js/user/history.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", async ()=>{
+    const navbar=document.querySelector(".navbar");
+    navbar.innerHTML=`<a href="dashboard.html">Beranda</a><a href="history.html">History</a><a href="#" id="logoutBtn">Logout</a>`;
+    document.getElementById("logoutBtn").onclick=()=>{localStorage.removeItem("userId");window.location.href="../index.html";}
+    
+    const uid=localStorage.getItem("userId");
+    const container=document.getElementById("historyContainer");
+
+    async function fetchHistory(){
+        const {data:orders}=await supabase.from("orders").select("*").eq("user_id",uid).order("created_at",{ascending:false});
+        if(!orders || orders.length===0){container.innerHTML="<p>Belum ada history</p>"; return;}
+        let html=`<table class="table"><tr><th>Produk</th><th>Qty</th><th>Harga</th><th>Status</th></tr>`;
+        orders.forEach(o=>{html+=`<tr><td>${o.product_name}</td><td>${o.qty}</td><td>Rp${o.price*o.qty}</td><td>${o.status}</td></tr>`;});
+        html+="</table>";
+        container.innerHTML=html;
+    }
+    fetchHistory();
+
+    // Realtime
+    supabase.from(`orders:user_id=eq.${uid}`).on('UPDATE',payload=>{fetchHistory();}).subscribe();
+});
+</script>
 </head>
 <body>
-
-<div class="navbar">
-    <div>StoreSkull</div>
-    <div>
-        <a href="dashboard.html">Beranda</a>
-        <a href="keranjang.html">Keranjang</a>
-        <a href="history.html">History</a>
-        <a href="#" id="logoutBtn">Logout</a>
-    </div>
-</div>
-
-<h2 style="text-align:center; margin-top:20px;">History Transaksi Anda</h2>
-<div id="historyContainer" style="width:80%; margin:auto;"></div>
-
-<footer>@2025 SKULLHOSTING - StoreSkull</footer>
-
+<div class="navbar"></div>
+<h2>History Order</h2>
+<div id="historyContainer"></div>
+<footer>@2025SKULLHOSTING - StoreSkull</footer>
 </body>
 </html>
