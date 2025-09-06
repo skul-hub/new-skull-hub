@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kelola Produk - Admin StoreSkull</title>
+<link rel="stylesheet" href="../style.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+<script src="../supabase.js"></script>
+<script src="../js/admin/admin-products.js"></script>
+</head>
+<body>
+
+<div class="navbar">
+    <div>StoreSkull Admin</div>
+    <div>
+        <a href="dashboard.html">Beranda</a>
+        <a href="kelola-produk.html">Kelola Produk</a>
+        <a href="kelola-pesanan.html">Kelola Pesanan</a>
+        <a href="#" id="logoutBtn">Logout</a>
+    </div>
+</div>
+
+<h2 style="text-align:center; margin-top:20px;">Kelola Produk</h2>
+
+<div style="width:80%; margin:auto;">
+    <form id="addProductForm">
+        <input type="text" id="name" placeholder="Nama Produk" required>
+        <input type="number" id="price" placeholder="Harga" required>
+        <input type="text" id="image" placeholder="URL Gambar" required>
+        <button type="submit">Tambah Produk</button>
+    </form>
+    <div id="productTable"></div>
+</div>
+
+<footer>@2025 SKULLHOSTING - StoreSkull</footer>
+
+</body>
+</html>
