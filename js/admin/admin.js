@@ -1,20 +1,11 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const logoutBtn = document.getElementById("logoutBtn");
-    logoutBtn?.addEventListener("click", () => {
-        localStorage.removeItem("admin");
-        window.location.href = "../index.html";
-    });
-
-    // Optional: cek login admin
-    if(!localStorage.getItem("admin") && window.location.pathname.includes("admin")){
-        const username = prompt("Masukkan username admin:");
-        const password = prompt("Masukkan password admin:");
-        if(username === "admin" && password === "admin112233"){
-            alert("Berhasil login sebagai admin!");
-            localStorage.setItem("admin","true");
-        } else {
-            alert("Gagal login admin!");
-            window.location.href="../index.html";
-        }
-    }
+document.addEventListener("DOMContentLoaded", ()=>{
+    if(!localStorage.getItem("admin")){window.location.href="../index.html";}
+    const navbar=document.querySelector(".navbar");
+    navbar.innerHTML=`
+        <a href="dashboard.html">Dashboard</a>
+        <a href="kelola-produk.html">Kelola Produk</a>
+        <a href="kelola-pesanan.html">Kelola Pesanan</a>
+        <a href="#" id="logoutBtn">Logout</a>
+    `;
+    document.getElementById("logoutBtn").onclick=()=>{localStorage.removeItem("admin"); window.location.href="../index.html";}
 });
