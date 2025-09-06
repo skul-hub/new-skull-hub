@@ -1,39 +1,47 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kelola Produk - Admin StoreSkull</title>
+<title>Kelola Produk</title>
 <link rel="stylesheet" href="../style.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 <script src="../supabase.js"></script>
-<script src="../js/admin/admin-products.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", async()=>{
+    if(!localStorage.getItem("admin")){alert("Login admin dulu"); window.location.href="../index.html";}
+    const container=document.getElementById("productTable");
+    async function fetchProducts(){
+        const {data:products}=await supabase.from("products").select("*");
+        let html=`<table class="table"><tr><th>Nama</th><th>Harga</th><th>Gambar</th><th>Aksi</th></tr>`;
+        products.forEach(p=>{html+=`<tr>
+            <td>${p.name}</td>
+            <td>${p.price}</td>
+            <td><img src="${p.image}" width="50"/></td>
+            <td><button onclick="edit(${p.id})">Edit</button> <button onclick="hapus(${p.id})">Hapus</button></td>
+        </tr>`;});
+        html+="</table>";
+        container.innerHTML=html;
+    }
+    fetchProducts();
+
+    window.tambahProduk=async()=>{
+        const n=prompt("Nama produk"); const pr=parseInt(prompt("Harga")); const img=prompt("URL Gambar");
+        if(!n||!pr) return alert("Nama & harga wajib");
+        await supabase.from("products").insert([{name:n,price:pr,image:img}]); fetchProducts();
+    }
+    window.edit=async(id)=>{
+        const n=prompt("Nama baru"); const pr=parseInt(prompt("Harga baru")); const img=prompt("URL Gambar baru");
+        if(!n||!pr) return alert("Nama & harga wajib");
+        await supabase.from("products").update({name:n,price:pr,image:img}).eq("id",id); fetchProducts();
+    }
+    window.hapus=async(id)=>{if(confirm("Yakin hapus?")){await supabase.from("products").delete().eq("id",id); fetchProducts();}};
+});
+</script>
 </head>
 <body>
-
-<div class="navbar">
-    <div>StoreSkull Admin</div>
-    <div>
-        <a href="dashboard.html">Beranda</a>
-        <a href="kelola-produk.html">Kelola Produk</a>
-        <a href="kelola-pesanan.html">Kelola Pesanan</a>
-        <a href="#" id="logoutBtn">Logout</a>
-    </div>
-</div>
-
-<h2 style="text-align:center; margin-top:20px;">Kelola Produk</h2>
-
-<div style="width:80%; margin:auto;">
-    <form id="addProductForm">
-        <input type="text" id="name" placeholder="Nama Produk" required>
-        <input type="number" id="price" placeholder="Harga" required>
-        <input type="text" id="image" placeholder="URL Gambar" required>
-        <button type="submit">Tambah Produk</button>
-    </form>
-    <div id="productTable"></div>
-</div>
-
-<footer>@2025 SKULLHOSTING - StoreSkull</footer>
-
+<div class="navbar"></div>
+<h2>Kelola Produk</h2>
+<button onclick="tambahProduk()">Tambah Produk</button>
+<div id="productTable"></div>
+<footer>@2025SKULLHOSTING - StoreSkull</footer>
 </body>
 </html>
