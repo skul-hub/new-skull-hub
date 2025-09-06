@@ -1,31 +1,20 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const registerForm = document.getElementById("registerForm");
-    const msg = document.getElementById("msg");
-
-    registerForm.addEventListener("submit", async (e)=>{
+document.addEventListener("DOMContentLoaded", ()=>{
+    const form = document.getElementById("registerForm");
+    form.addEventListener("submit", async (e)=>{
         e.preventDefault();
-        const username = document.getElementById("username").value.trim();
-        const password = document.getElementById("password").value.trim();
+        const username = document.getElementById("regUsername").value.trim();
+        const password = document.getElementById("regPassword").value.trim();
 
-        // cek username sudah ada
-        const { data: existing } = await supabase
-            .from("users")
-            .select("*")
-            .eq("username", username)
-            .single();
+        if(!username || !password) return alert("Semua field wajib diisi");
 
-        if(existing){
-            msg.textContent = "Username sudah digunakan!";
-        } else {
-            const { data, error } = await supabase
-                .from("users")
-                .insert([{ username, password }]);
-            if(error){
-                msg.textContent = "Gagal registrasi!";
-            } else {
-                alert("Berhasil registrasi! Silakan login.");
-                window.location.href = "index.html";
-            }
-        }
+        // cek username unik
+        const { data: existing } = await supabase.from("users").select("*").eq("username", username);
+        if(existing.length>0) return alert("Username sudah ada");
+
+        const { error } = await supabase.from("users").insert([{username, password}]);
+        if(error) return alert(error.message);
+
+        alert("Registrasi berhasil! Silahkan login");
+        window.location.href = "index.html";
     });
 });
