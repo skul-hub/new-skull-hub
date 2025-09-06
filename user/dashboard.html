@@ -1,30 +1,44 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>StoreSkull - User Dashboard</title>
+<title>User Dashboard</title>
 <link rel="stylesheet" href="../style.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 <script src="../supabase.js"></script>
-<script src="../js/user/dashboard.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", async ()=>{
+    const navbar=document.querySelector(".navbar");
+    navbar.innerHTML=`<a href="dashboard.html">Beranda</a><a href="history.html">History</a><a href="#" id="logoutBtn">Logout</a>`;
+    document.getElementById("logoutBtn").onclick=()=>{localStorage.removeItem("userId");window.location.href="../index.html";}
+    
+    const container=document.getElementById("productContainer");
+    const {data:products}=await supabase.from("products").select("*");
+    if(!products || products.length===0){container.innerHTML="<p>Tidak ada produk</p>"; return;}
+    let html="";
+    products.forEach(p=>{
+        html+=`<div class="card">
+            <img src="${p.image}" />
+            <h3>${p.name}</h3>
+            <p>Rp${p.price}</p>
+            <button onclick="buy('${p.id}','${p.name}',${p.price})">Buy</button>
+        </div>`;
+    });
+    container.innerHTML=html;
+});
+
+window.buy=async(id,name,price)=>{
+    const n=prompt("Nama"); const ph=prompt("No HP"); const t=prompt("Telegram(opsional)");
+    if(!n || !ph){alert("Nama/No wajib"); return;}
+    const uid=localStorage.getItem("userId");
+    await supabase.from("orders").insert([{user_id:uid,product_id:id,product_name:name,qty:1,price,buyer_name:n,phone:ph,telegram:t,status:"pending"}]);
+    alert("Order berhasil!"); location.reload();
+};
+</script>
 </head>
 <body>
-
-<div class="navbar">
-    <div>StoreSkull</div>
-    <div>
-        <a href="dashboard.html">Beranda</a>
-        <a href="keranjang.html">Keranjang</a>
-        <a href="history.html">History</a>
-        <a href="#" id="logoutBtn">Logout</a>
-    </div>
-</div>
-
-<h2 style="text-align:center; margin-top:20px;">Produk Tersedia</h2>
-<div id="productsContainer" style="display:flex; flex-wrap:wrap; justify-content:center;"></div>
-
-<footer>@2025 SKULLHOSTING - StoreSkull</footer>
-
+<div class="navbar"></div>
+<h2>Produk StoreSkull</h2>
+<div id="productContainer"></div>
+<footer>@2025SKULLHOSTING - StoreSkull</footer>
 </body>
 </html>
